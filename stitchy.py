@@ -1,4 +1,4 @@
-def stitchy(filename="result", extension="png"):
+def stitchy(filename="result", extension="png", imgpath="."):
     import glob
     import os
     from PIL import Image
@@ -11,8 +11,17 @@ def stitchy(filename="result", extension="png"):
     except OSError:
         pass
     
-    # Get list of PNGs in current directory.
-    images = [Image.open(f) for f in glob.glob('*.png')]
+    # Get list of images in specified directory.
+    included_extenstions = ["*.jpg","*.bmp","*.png","*.gif"]
+    
+    file_names = []
+    for ext in included_extenstions:
+        file_names.extend(glob.glob("{0}\{1}".format(imgpath,ext)))
+    
+    if len(file_names) == 0:
+        raise IOError("No image files found in specified directory.")
+    
+    images = [Image.open(f) for f in file_names]
     
     # Get the maximum width and total height.
     result_width, result_height = 0, 0
@@ -39,4 +48,4 @@ def stitchy(filename="result", extension="png"):
     result.save(result_filename)
 
 if __name__ == "__main__":
-    stitchy("result","png")
+    stitchy()
