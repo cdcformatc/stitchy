@@ -10,7 +10,7 @@ def stitchy(filename="result", extension="png", imgpath="."):
         os.remove(result_filename)
     except OSError:
         pass
-    
+        
     # Get list of images in specified directory.
     included_extenstions = ["*.jpg","*.bmp","*.png","*.gif"]
     
@@ -25,10 +25,15 @@ def stitchy(filename="result", extension="png", imgpath="."):
     
     # Get the maximum width and total height.
     result_width, result_height = 0, 0
-    for image in images:
-        width, height = image.size
-        result_width = max(result_width, width)
-        result_height += height
+    result_width = max(i.size[0] for i in images)
+    
+    # Resize images to max width.
+    for i,image in enumerate(images):
+        ratio = float(result_width) / image.size[0]
+        newsize = (int(image.size[0]*ratio), int(image.size[1]*ratio))
+        image = image.resize(newsize, Image.ANTIALIAS)
+        result_height += newsize[1]
+        images[i] = image
     
     # Create new image with those dimensions.
     result = Image.new("RGB", (result_width, result_height))
@@ -37,8 +42,6 @@ def stitchy(filename="result", extension="png", imgpath="."):
     y_offset = 0
     
     for image in images:
-        # Resize image to max width.
-        image = image.resize((result_width, image.size[1]), Image.NEAREST)
         # Paste image into result at current y offset.
         result.paste(image, (0, y_offset))
         # Increase y offset.
