@@ -2,7 +2,7 @@ import glob
 import os
 from PIL import Image
 
-def stitch_files(files, filepath=".\result.png"):
+def stitch_files(files):
     
     images = [Image.open(f) for f in files]
     
@@ -31,7 +31,7 @@ def stitch_files(files, filepath=".\result.png"):
         y_offset += image.size[1]
         
     # Done!
-    result.save(filepath)
+    return result
 
 def stitchy(imgpath=".", filename="result.png"):
     
@@ -51,7 +51,8 @@ def stitchy(imgpath=".", filename="result.png"):
     if len(files) == 0:
         raise IOError("No image files found in specified directory.")
     
-    stitch_files(files, result_filepath)
+    result = stitch_files(files)
+    result.save(result_filepath)
 
 if __name__ == "__main__":
     stitchy()
