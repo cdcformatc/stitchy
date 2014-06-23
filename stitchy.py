@@ -3,16 +3,9 @@ import os
 from PIL import Image
 
 def stitch_files(files, filename="result", extension="png"):
-
     result_filename = "{0}.{1}".format(filename,extension)
     
-    # Remove the result image if it exists.
-    try:
-        os.remove(result_filename)
-    except OSError:
-        pass
-        
-    images = [Image.open(f) for f in files]
+    images = [Image.open(f) for f in files if f != result_filename]
     
     # Get the maximum width and total height.
     result_width, result_height = 0, 0
@@ -42,14 +35,7 @@ def stitch_files(files, filename="result", extension="png"):
     result.save(result_filename)
 
 def stitchy(imgpath=".", filename="result", extension="png"):
-    
-    result_filename = "{0}.{1}".format(filename,extension)
-    
-    # Remove the result image if it exists.
-    try:
-        os.remove(result_filename)
-    except OSError:
-        pass
+    result_filename = "{0}\{1}.{2}".format(imgpath,filename,extension)
     
     # Get list of images in specified directory.
     included_extenstions = ["*.jpg","*.bmp","*.png","*.gif"]
@@ -57,6 +43,9 @@ def stitchy(imgpath=".", filename="result", extension="png"):
     files = []
     for ext in included_extenstions:
         files.extend(glob.glob("{0}\{1}".format(imgpath,ext)))
+        
+    if result_filename in files:
+        files.remove(result_filename)
     
     if len(files) == 0:
         raise IOError("No image files found in specified directory.")
