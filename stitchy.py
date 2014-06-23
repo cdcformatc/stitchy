@@ -1,5 +1,4 @@
 import glob
-import os
 from PIL import Image
 
 def stitch_files(files):
