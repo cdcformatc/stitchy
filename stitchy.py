@@ -1,4 +1,4 @@
-def stitchy(filename="result", extension="png", imgpath="."):
+def stitchy(imgpath=".", filename="result", extension="png"):
     import glob
     import os
     from PIL import Image
