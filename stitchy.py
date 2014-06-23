@@ -2,10 +2,9 @@ import glob
 import os
 from PIL import Image
 
-def stitch_files(files, filename="result", extension="png"):
-    result_filename = "{0}.{1}".format(filename,extension)
+def stitch_files(files, filepath=".\result.png"):
     
-    images = [Image.open(f) for f in files if f != result_filename]
+    images = [Image.open(f) for f in files]
     
     # Get the maximum width and total height.
     result_width, result_height = 0, 0
@@ -32,10 +31,9 @@ def stitch_files(files, filename="result", extension="png"):
         y_offset += image.size[1]
         
     # Done!
-    result.save(result_filename)
+    result.save(filepath)
 
-def stitchy(imgpath=".", filename="result", extension="png"):
-    result_filename = "{0}\{1}.{2}".format(imgpath,filename,extension)
+def stitchy(imgpath=".", filename="result.png"):
     
     # Get list of images in specified directory.
     included_extenstions = ["*.jpg","*.bmp","*.png","*.gif"]
@@ -43,14 +41,17 @@ def stitchy(imgpath=".", filename="result", extension="png"):
     files = []
     for ext in included_extenstions:
         files.extend(glob.glob("{0}\{1}".format(imgpath,ext)))
-        
-    if result_filename in files:
-        files.remove(result_filename)
+    
+    # Remove result from images to combine
+    result_filepath = "{0}\{1}".format(imgpath,filename)
+    
+    if result_filepath in files:
+        files.remove(result_filepath)
     
     if len(files) == 0:
         raise IOError("No image files found in specified directory.")
     
-    stitch_files(files, filename, extension)
+    stitch_files(files, result_filepath)
 
 if __name__ == "__main__":
     stitchy()
