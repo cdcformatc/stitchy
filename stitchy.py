@@ -42,7 +42,7 @@ def stitchy(imgpath=".", filename="result.png"):
         files.extend(glob.glob("{0}\{1}".format(imgpath,ext)))
     
     # Remove result from images to combine
-    result_filepath = "{0}\{1}".format(imgpath,filename)
+    result_filepath = ".\{0}".format(filename)
     
     if result_filepath in files:
         files.remove(result_filepath)
