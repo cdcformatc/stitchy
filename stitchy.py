@@ -1,8 +1,9 @@
-def stitchy(imgpath=".", filename="result", extension="png"):
-    import glob
-    import os
-    from PIL import Image
-    
+import glob
+import os
+from PIL import Image
+
+def stitch_files(files, filename="result", extension="png"):
+
     result_filename = "{0}.{1}".format(filename,extension)
     
     # Remove the result image if it exists.
@@ -11,17 +12,7 @@ def stitchy(imgpath=".", filename="result", extension="png"):
     except OSError:
         pass
         
-    # Get list of images in specified directory.
-    included_extenstions = ["*.jpg","*.bmp","*.png","*.gif"]
-    
-    file_names = []
-    for ext in included_extenstions:
-        file_names.extend(glob.glob("{0}\{1}".format(imgpath,ext)))
-    
-    if len(file_names) == 0:
-        raise IOError("No image files found in specified directory.")
-    
-    images = [Image.open(f) for f in file_names]
+    images = [Image.open(f) for f in files]
     
     # Get the maximum width and total height.
     result_width, result_height = 0, 0
@@ -49,6 +40,28 @@ def stitchy(imgpath=".", filename="result", extension="png"):
         
     # Done!
     result.save(result_filename)
+
+def stitchy(imgpath=".", filename="result", extension="png"):
+    
+    result_filename = "{0}.{1}".format(filename,extension)
+    
+    # Remove the result image if it exists.
+    try:
+        os.remove(result_filename)
+    except OSError:
+        pass
+    
+    # Get list of images in specified directory.
+    included_extenstions = ["*.jpg","*.bmp","*.png","*.gif"]
+    
+    files = []
+    for ext in included_extenstions:
+        files.extend(glob.glob("{0}\{1}".format(imgpath,ext)))
+    
+    if len(files) == 0:
+        raise IOError("No image files found in specified directory.")
+    
+    stitch_files(files, filename, extension)
 
 if __name__ == "__main__":
     stitchy()
